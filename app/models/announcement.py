@@ -6,11 +6,10 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from app.api.routes import announcements
 from app.db.session import Base
 
 
-class AnnouncementStatus(Base):
+class AnnouncementStatus(str, enum.Enum):
     active = "active"
     archived = "archived"
     deleted = "deleted"
