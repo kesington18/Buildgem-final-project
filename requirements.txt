@@ -9,3 +9,4 @@ python-dotenv
 redis
 pytest
 httpx
+celery
