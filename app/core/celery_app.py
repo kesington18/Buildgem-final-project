@@ -1,6 +1,3 @@
-from time import timezone
-
-import celery
 from celery import Celery
 from app.config import settings
 
@@ -11,15 +8,22 @@ celery_app = Celery(
 )
 
 celery_app.conf.update(
+    # Upstash requires TLS (rediss://) — this tells Celery's Redis
+    # transport not to verify a cert chain, which Upstash's setup doesn't need
+    broker_use_ssl={"ssl_cert_reqs": "none"},
+    redis_backend_use_ssl={"ssl_cert_reqs": "none"},
+    include=["app.services.background_tasks"],
+
+    broker_connection_retry_on_startup=True,
+
     task_serializer="json",
     result_serializer="json",
     accept_content=["json"],
+
     timezone="UTC",
     enable_utc=True,
-    # If a worker crashes mid-send, redeliver the task instead of losing it
-    task_acks_late=True,
-    # don't let one slow task block others queued behind it
-    worker_prefetch_multiplier=1,
-    # if Pxxl is briefly unreachable, wait 30s before retrying
-    task_default_retry_delay=30,  # seconds
+
+    task_acks_late=True,          # if the worker crashes mid-task, redeliver it instead of losing it
+    worker_prefetch_multiplier=1, # don't let one slow task block others queued behind it
+    task_default_retry_delay=30,  # if Pxxl is briefly unreachable, wait 30s before retrying
 )

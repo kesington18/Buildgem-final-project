@@ -1,0 +1,59 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Virtual environments
+.venv
+venv
+env
+ENV
+
+# IDE and editor files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info
+dist
+build
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+.tox
+
+# Environment files (use ARG or explicit env_file in compose)
+.env.local
+.env.*.local
+
+# Docker files (already in context)
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# Development/documentation
+README.md
+*.md
+CONTRIBUTING.md
+LICENSE
+docs
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.circleci
+
+# OS
+.DS_Store
+Thumbs.db
