@@ -34,6 +34,7 @@ htmlcov
 .tox
 
 # Environment files (use ARG or explicit env_file in compose)
+.env
 .env.local
 .env.*.local
 
