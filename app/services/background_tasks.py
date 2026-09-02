@@ -1,5 +1,8 @@
+from sqlalchemy.sql.operators import contains
+
 from app.core.celery_app import celery_app
 from app.db.session import SessionLocal
+from app.models import group
 from app.models.group import TelegramGroup
 
 @celery_app.task
@@ -30,3 +33,17 @@ def handle_chat_member_update(chat_member_update: dict, db):
             db.add(group)
             db.commit()
 
+def handle_message(message: dict, db):
+    chat_id = message["chat"]["id"]
+    text = message.get("text")
+
+    if not text:
+        return
+
+    group = db.query(TelegramGroup).filter(chat_id=chat_id, is_active=True).first()
+    if not group:
+        return
+
+    keywords = get_active_keywords(db)
+    if contains_keyword(text, keywords):
+        save_announcement(db, message, group)
