@@ -23,7 +23,7 @@ def handle_chat_member_update(chat_member_update: dict, db):
     chat = chat_member_update["chat"]
 
     if new_status in ("member", "administrator"):
-        existing = db.query(TelegramGroup).filter(chat_id=chat["id"]).first()
+        existing = db.query(TelegramGroup).filter_by(chat_id=chat["id"]).first()
         if not existing:
             group = TelegramGroup(
                 chat_id=chat["id"],
@@ -40,7 +40,7 @@ def handle_message(message: dict, db):
     if not text:
         return
 
-    group = db.query(TelegramGroup).filter(chat_id=chat_id, is_active=True).first()
+    group = db.query(TelegramGroup).filter_by(chat_id=chat_id, is_active=True).first()
     if not group:
         return
 
