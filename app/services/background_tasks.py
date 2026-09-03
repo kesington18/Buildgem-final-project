@@ -1,13 +1,13 @@
 from sqlalchemy.sql.operators import contains
 
 from app.core.celery_app import celery_app
-from app.db.session import SessionLocal
+from app.db.session import sessionLocal
 from app.models import group
 from app.models.group import TelegramGroup
 
 @celery_app.task
 def process_update(payload: dict):
-    db = SessionLocal()
+    db = sessionLocal()
 
     try:
         if "my_chat_member" in payload:
@@ -44,6 +44,6 @@ def handle_message(message: dict, db):
     if not group:
         return
 
-    keywords = get_active_keywords(db)
-    if contains_keyword(text, keywords):
-        save_announcement(db, message, group)
+    # keywords = get_active_keywords(db)
+    # if contains_keyword(text, keywords):
+    #     save_announcement(db, message, group)
