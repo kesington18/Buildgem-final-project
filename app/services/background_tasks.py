@@ -4,6 +4,9 @@ from app.core.celery_app import celery_app
 from app.db.session import sessionLocal
 from app.models import group
 from app.models.group import TelegramGroup
+from app.services.announcement_writer import save_announcement
+from app.services.keyword_matcher import get_active_keywords, contains_keyword
+
 
 @celery_app.task
 def process_update(payload: dict):
@@ -40,10 +43,10 @@ def handle_message(message: dict, db):
     if not text:
         return
 
-    group = db.query(TelegramGroup).filter_by(chat_id=chat_id, is_active=True).first()
-    if not group:
+    new_group = db.query(TelegramGroup).filter_by(chat_id=chat_id, is_active=True).first()
+    if not new_group:
         return
 
-    # keywords = get_active_keywords(db)
-    # if contains_keyword(text, keywords):
-    #     save_announcement(db, message, group)
+    keywords = get_active_keywords(db)
+    if contains_keyword(text, keywords):
+        save_announcement(db, message, new_group)
