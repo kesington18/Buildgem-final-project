@@ -7,6 +7,7 @@ pydantic
 pydantic-settings
 python-dotenv
 redis
+requests
 pytest
 httpx
 celery
