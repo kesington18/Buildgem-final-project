@@ -11,6 +11,7 @@ async def telegram_webhook(request: Request, x_telegram_bot_api_secret_token: st
         raise HTTPException(status_code=403, detail="Invalid secret token")
 
     payload = await request.json()
+
     with open("/code/last_payload.json", "w") as f:
         json.dump(payload, f, indent=2)
     process_update.delay(payload)
