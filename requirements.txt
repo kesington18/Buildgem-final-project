@@ -9,3 +9,5 @@ python-dotenv
 redis
 pytest
 httpx
+passlib[bcrypt]
+python-jose[cryptography]
