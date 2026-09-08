@@ -7,7 +7,7 @@ pydantic
 pydantic-settings
 python-dotenv
 redis
+requests
 pytest
 httpx
-passlib[bcrypt]
-python-jose[cryptography]
+celery
