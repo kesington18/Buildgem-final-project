@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 from jose import jwt, JWTError
-
 from app.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -27,15 +26,21 @@ def create_token(data: dict, expires_delta: timedelta) -> str:
 
 def create_access_token(user_id: str, role: str) -> str:
     return create_token(
-        {"sub": user_id, "role": role, "type": "access"},
+        {
+            "sub": user_id,
+            "role": role,
+            "type": "access"
+        },
         timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     )
 
 
 def create_refresh_token(user_id: str) -> str:
     return create_token(
-        {"sub": user_id, "type": "refresh"},
-        timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS),
+        {
+            "sub": user_id,
+            "type": "refresh"},
+            timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS),
     )
 
 

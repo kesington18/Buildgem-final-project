@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     redis_url: str
     telegram_secret_token: str
     telegram_bot_token: str
+    jwt_secret_key: str
 
     model_config = SettingsConfigDict(env_file=".env", extra='ignore')
 
