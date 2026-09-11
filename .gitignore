@@ -1,5 +1,6 @@
 # Environment / secrets
 .env
+glory/
 
 # Python
 __pycache__/
