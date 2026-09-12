@@ -2,10 +2,9 @@ from sqlalchemy.sql.operators import contains
 
 from app.core.celery_app import celery_app
 from app.db.session import sessionLocal
-from app.models import group
 from app.models.group import TelegramGroup
 from app.services.announcement_writer import save_announcement
-from app.services.keyword_matcher import get_active_keywords, contains_keyword
+from app.services.keyword_matcher import get_active_keywords, get_matched_keywords
 
 
 @celery_app.task
@@ -48,5 +47,6 @@ def handle_message(message: dict, db):
         return
 
     keywords = get_active_keywords(db)
-    if contains_keyword(text, keywords):
-        save_announcement(db, message, new_group)
+    matched = get_matched_keywords(text, keywords)
+    if matched:
+        save_announcement(db, message, new_group, matched)
