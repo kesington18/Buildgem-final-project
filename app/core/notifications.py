@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 import uuid
 from datetime import datetime
 
-
 def notify_students_for_announcement(announcement: Announcement, db: Session):
     matched_keywords = (
                         db.query(Keyword)
