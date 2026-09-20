@@ -1,1 +1,23 @@
+# Environment / secrets
 .env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# uv
+.venv/
+
+# PyCharm
+.idea/
+
+# Alembic generated boilerplate (optional — some teams keep these)
+alembic/README
+alembic/script.py.mako
+app/db/migrations/README
+app/db/migrations/script.py.mako
+
+# Misc local artifacts
+last_payload.json
