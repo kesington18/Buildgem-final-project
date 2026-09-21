@@ -21,4 +21,4 @@ app/db/migrations/README
 app/db/migrations/script.py.mako
 
 # Misc local artifacts
-last_payload.json
+last_payload.json.env
