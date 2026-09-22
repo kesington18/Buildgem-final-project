@@ -5,6 +5,9 @@ from app.models.keyword import Keyword
 from sqlalchemy.orm import Session
 import uuid
 from datetime import datetime
+from app.core.celery_app import celery_app
+from app.db.session import sessionLocal
+
 
 def notify_students_for_announcement(announcement: Announcement, db: Session):
     matched_keywords = (
@@ -54,4 +57,16 @@ def notify_students_for_announcement(announcement: Announcement, db: Session):
 
     db.commit()
 
-    return matched_user_ids
+
+@celery_app.task
+def dispatch_notification(announcement_id: str):
+    db = sessionLocal()
+
+    try:
+        announcement = db.query(Announcement).filter(Announcement.id == announcement_id).first()
+        if not announcement:
+            return
+
+        notify_students_for_announcement(announcement, db)
+    finally:
+        db.close()
