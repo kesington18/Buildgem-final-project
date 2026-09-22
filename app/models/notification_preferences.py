@@ -3,7 +3,6 @@ import uuid
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, String, CheckConstraint, ForeignKey, Boolean, DateTime
 from datetime import datetime
-from sqlalchemy.orm import relationship
 
 
 class NotificationPreferences(Base):
@@ -16,10 +15,6 @@ class NotificationPreferences(Base):
     category = Column(String, nullable=True)
     channel = Column(String, default="in_app")
     created_at = Column(DateTime, default=datetime.now)
-
-    # user = relationship("User", back_populates="notification_preferences")
-    # group = relationship("TelegramGroup")
-    # keyword = relationship("Keyword")
 
     __table_args__ = (
         CheckConstraint(
