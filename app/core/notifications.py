@@ -57,7 +57,6 @@ def notify_students_for_announcement(announcement: Announcement, db: Session):
 
     db.commit()
 
-
 @celery_app.task
 def dispatch_notification(announcement_id: str):
     db = sessionLocal()
