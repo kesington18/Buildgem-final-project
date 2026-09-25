@@ -23,3 +23,4 @@ app/db/migrations/script.py.mako
 # Misc local artifacts
 last_payload.json.env
 last_payload.json
+glory/
