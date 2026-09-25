@@ -9,6 +9,23 @@ services:
     volumes:
       - .:/code
 
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./app
+          target: /code/app
+          ignore:
+            - __pycache__/
+
+        - action: rebuild
+          path: ./Dockerfile
+
+        - action: rebuild
+          path: ./requirements.txt
+
+        - action: rebuild
+          path: ./.env
+
   worker:
     build: .
     command: celery -A app.core.celery_app worker --loglevel=info
@@ -16,3 +33,28 @@ services:
       - .env
     volumes:
       - .:/code
+
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./app
+          target: /code/app
+          ignore:
+            - __pycache__/
+
+        - action: rebuild
+          path: ./Dockerfile
+
+        - action: rebuild
+          path: ./requirements.txt
+
+        - action: rebuild
+          path: ./.env
+  test-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: test_db
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+    ports:
+      - "5433:5432"

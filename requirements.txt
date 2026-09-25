@@ -11,4 +11,8 @@ requests
 pytest
 httpx
 celery
-pytest-mock
+passlib==1.7.4
+#test
+bcrypt==4.0.1
+python-jose[cryptography]
+email-validator
