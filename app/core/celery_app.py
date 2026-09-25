@@ -12,7 +12,7 @@ celery_app.conf.update(
     # transport not to verify a cert chain, which Upstash's setup doesn't need
     broker_use_ssl={"ssl_cert_reqs": "none"},
     redis_backend_use_ssl={"ssl_cert_reqs": "none"},
-    include=["app.services.background_tasks"],
+    include=["app.services.background_tasks", "app.core.notifications"],
 
     broker_connection_retry_on_startup=True,
 
