@@ -17,7 +17,7 @@ def list_groups(db: Session = Depends(get_db), admin=Depends(get_current_admin))
 
 @router.post("", response_model=GroupOut)
 def create_group(payload: GroupCreate, db: Session = Depends(get_db), admin=Depends(get_current_admin)):
-    group = TelegramGroup(chat_id=payload.chat_id, name=payload.name, added_by=admin.id, is_active=True)
+    group = TelegramGroup(chat_id=payload.chat_id, name=payload.name, added_by=admin.id)
     db.add(group)
     db.commit()
     db.refresh(group)

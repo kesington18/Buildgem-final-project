@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 # from app.db.session import Base, engine
 from app.models import user, group, keyword, announcement
-from app.api.routes import webhook, auth, keywords, admin_groups, admin_announcements
+from app.api.routes import webhook, auth, keywords, admin_groups, admin_announcements, admin_analytics
 
 app = FastAPI(title="Centralized Student Information System")
 # Base.metadata.create_all(bind=engine)

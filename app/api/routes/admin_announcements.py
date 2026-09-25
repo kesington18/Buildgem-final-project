@@ -33,24 +33,3 @@ def delete_announcement(announcement_id: UUID, db: Session = Depends(get_db), ad
     db.delete(ann)
     db.commit()
     return {"detail": "Deleted"}
-
-
-@router.get("/analytics")
-def analytics(db: Session = Depends(get_db), admin=Depends(get_current_admin)):
-    per_category = (
-        db.query(Keyword.category, func.count(Announcement.id))
-        .join(announcement_keywords, announcement_keywords.c.keyword_id == Keyword.id)
-        .join(Announcement, Announcement.id == announcement_keywords.c.announcement_id)
-        .group_by(Keyword.category)
-        .all()
-    )
-    per_group = (
-        db.query(TelegramGroup.name, func.count(Announcement.id))
-        .join(Announcement, Announcement.source_group_id == TelegramGroup.id)
-        .group_by(TelegramGroup.name)
-        .all()
-    )
-    return {
-        "per_category": dict(per_category),
-        "per_group": dict(per_group),
-    }
