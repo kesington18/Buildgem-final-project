@@ -9,3 +9,6 @@ dependencies = [
     "requests>=2.34.2",
     "sqlalchemy>=2.0.52",
 ]
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
