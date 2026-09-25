@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from app.schemas.notification import NotificationOut, ReadNotification, NotificationPreferencesOut, NotificationPreferenceUpdate
 import uuid
 
-router = APIRouter(prefix="/notifications", tags=["Notifications"])
+router = APIRouter(prefix="/api/v1/notifications", tags=["Notifications"])
 
 @router.get("", response_model=list[NotificationOut])
 def get_current_student_notifications(
