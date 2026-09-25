@@ -5,7 +5,7 @@ from uuid import UUID
 from app.db.session import get_db
 from app.api.deps import get_current_admin
 from app.models.group import TelegramGroup
-from app.schemas.group import GroupCreate, GroupUpdate, GroupOut
+from app.schemas.group import GroupUpdate, GroupOut
 
 router = APIRouter(prefix="/admin/groups", tags=["admin-groups"])
 
@@ -13,15 +13,6 @@ router = APIRouter(prefix="/admin/groups", tags=["admin-groups"])
 @router.get("", response_model=list[GroupOut])
 def list_groups(db: Session = Depends(get_db), admin=Depends(get_current_admin)):
     return db.query(TelegramGroup).all()
-
-
-@router.post("", response_model=GroupOut)
-def create_group(payload: GroupCreate, db: Session = Depends(get_db), admin=Depends(get_current_admin)):
-    group = TelegramGroup(chat_id=payload.chat_id, name=payload.name, added_by=admin.id)
-    db.add(group)
-    db.commit()
-    db.refresh(group)
-    return group
 
 
 @router.patch("/{group_id}", response_model=GroupOut)
