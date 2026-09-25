@@ -5,7 +5,7 @@ from app.models.group import TelegramGroup
 from app.db.session import get_db
 from app.api.deps import get_current_user
 
-router = APIRouter(prefix="/groups", tags=["Groups"])
+router = APIRouter(prefix="/api/v1/groups", tags=["Groups"])
 
 @router.get("")
 def get_groups(

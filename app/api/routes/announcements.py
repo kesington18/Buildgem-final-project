@@ -10,7 +10,7 @@ from app.models.user import User
 from app.models.keyword import Keyword
 from app.schemas.announcement import AnnouncementOut
 
-router = APIRouter(prefix="/announcements", tags=["Announcements"])
+router = APIRouter(prefix="/api/v1/announcements", tags=["Announcements"])
 
 @router.get("", response_model=list[AnnouncementOut])
 def get_announcements(
