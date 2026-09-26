@@ -12,5 +12,4 @@ def get_groups(
         current_user: User = Depends(get_current_user),
         db: Session = Depends(get_db)
 ):
-    groups = db.query(TelegramGroup).all()
-    return groups
+    return db.query(TelegramGroup).filter(TelegramGroup.is_active.is_(True)).all()
