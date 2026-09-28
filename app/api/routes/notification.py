@@ -66,39 +66,10 @@ def update_preferences(
             id= uuid.uuid4(),
             user_id= current_user.id,
             group_id= item,
-            keyword_id= None,
-            category= None,
             channel= preferences.channel,
         )
         db.add(new_preference)
         all_created_preferences.append(new_preference)
-
-    current_user_keyword_preference = preferences.keyword_ids
-    for i in current_user_keyword_preference or []:
-        new_preference = NotificationPreferences(
-            id=uuid.uuid4(),
-            user_id=current_user.id,
-            group_id=None,
-            keyword_id=i,
-            category=None,
-            channel=preferences.channel,
-        )
-        db.add(new_preference)
-        all_created_preferences.append(new_preference)
-
-    current_user_category_preference = preferences.categories
-    for c in current_user_category_preference or []:
-        new_preference = NotificationPreferences(
-            id=uuid.uuid4(),
-            user_id= current_user.id,
-            group_id=None,
-            keyword_id=None,
-            category=c,
-            channel=preferences.channel,
-        )
-        db.add(new_preference)
-        all_created_preferences.append(new_preference)
-
 
     db.commit()
     for preference in all_created_preferences:
