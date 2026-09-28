@@ -2,6 +2,15 @@
 .env
 glory/
 
+# Postman workspace data
+.postman/
+postman/
+
+# Python compiled bytecode
+__pycache__/
+*.pyc
+app/**/__pycache__/
+
 # Python
 __pycache__/
 *.pyc
