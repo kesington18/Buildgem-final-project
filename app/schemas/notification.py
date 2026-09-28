@@ -1,7 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 import uuid
 from datetime import datetime
-from typing import Optional
 
 
 class NotificationOut(BaseModel):
@@ -23,15 +22,11 @@ class NotificationPreferencesOut(BaseModel):
 
     id: uuid.UUID
     user_id: uuid.UUID
-    group_id: Optional[uuid.UUID] = None
-    keyword_id: Optional[uuid.UUID] = None
-    category: Optional[str] = None
+    group_id: uuid.UUID
     channel: str
     created_at: datetime
 
 
 class NotificationPreferenceUpdate(BaseModel):
-    group_ids: Optional[list[uuid.UUID]] = None
-    keyword_ids: Optional[list[uuid.UUID]] = None
-    categories: Optional[list[str]] = None
+    group_ids: list[uuid.UUID]
     channel: str = Field(default="in_app")
