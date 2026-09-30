@@ -1,12 +1,15 @@
 
 from fastapi import Depends, APIRouter, HTTPException
+from starlette import endpoints
+
 from app.db.session import get_db
 from app.api.deps import get_current_user
 from app.models.user import User
 from app.models.notifications import Notification
+from app.models.push_notification import PushSubscription
 from app.models.notification_preferences import NotificationPreferences
 from sqlalchemy.orm import Session
-from app.schemas.notification import NotificationOut, ReadNotification, NotificationPreferencesOut, NotificationPreferenceUpdate
+from app.schemas.notification import NotificationOut, ReadNotification, NotificationPreferencesOut, NotificationPreferenceUpdate, PushSubscriptionCreate
 import uuid
 
 router = APIRouter(prefix="/api/v1/notifications", tags=["Notifications"])
@@ -76,7 +79,25 @@ def update_preferences(
         db.refresh(preference)
     return all_created_preferences
 
+@router.post("/push-subscription")
+def register_push_subscription(
+        subscription: PushSubscriptionCreate,
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    existing = db.query(PushSubscription).filter_by(endpoint=subscription.endpoint).first()
+    if existing:
+        return existing
 
+    new_sub = PushSubscription(
+        id=uuid.uuid4(),
+        user_id=current_user.id,
+        endpoint=subscription.endpoint,
+        p256dh_key=subscription.keys.p256dh,
+        auth_key=subscription.keys.auth,
+    )
 
-
-
+    db.add(new_sub)
+    db.commit()
+    db.refresh(new_sub)
+    return new_sub
