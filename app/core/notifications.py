@@ -6,6 +6,10 @@ import uuid
 from datetime import datetime
 from app.core.celery_app import celery_app
 from app.db.session import sessionLocal
+from pywebpush import webpush, WebPushException
+from app.models.push_notification import PushSubscription
+from app.config import settings
+import json
 
 
 def notify_students_for_announcement(announcement: Announcement, db: Session):
@@ -29,6 +33,7 @@ def notify_students_for_announcement(announcement: Announcement, db: Session):
             created_at= datetime.utcnow()
         )
         db.add(new_notification)
+        send_push(user_id, "New Announcement", announcement.message_content[:100], db)
 
     db.commit()
     return matched_user_ids
@@ -45,3 +50,27 @@ def dispatch_notification(announcement_id: str):
         notify_students_for_announcement(announcement, db)
     finally:
         db.close()
+
+# push notification
+def send_push(user_id, title, body, db):
+    subs = db.query(PushSubscription).filter(user_id=user_id).all()
+    for sub in subs:
+        try:
+            webpush(
+                subscription_info={
+                    "endpoint": sub.endpoint,
+                    "keys": {
+                        "p256dh": sub.p256dh,
+                        "auth": sub.auth_key,
+                    },
+                },
+                data=json.dumps({
+                    "title": title,
+                    "body": body
+                }),
+                vapid_private_key=settings.vapid_private_key,
+                vapid_claims={"sub": "mailto:you@example.com"},
+            )
+        except WebPushException:
+            db.delete(sub)
+            db.commit()
