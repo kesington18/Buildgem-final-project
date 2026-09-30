@@ -30,3 +30,12 @@ class NotificationPreferencesOut(BaseModel):
 class NotificationPreferenceUpdate(BaseModel):
     group_ids: list[uuid.UUID]
     channel: str = Field(default="in_app")
+
+class PushKeys(BaseModel):
+    p256dh: str
+    auth: str
+
+
+class PushSubscriptionCreate(BaseModel):
+    endpoint: str
+    keys: PushKeys
