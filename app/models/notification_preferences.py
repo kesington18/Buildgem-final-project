@@ -4,7 +4,6 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, String, UniqueConstraint, ForeignKey, Boolean, DateTime
 from datetime import datetime
 
-
 class NotificationPreferences(Base):
     __tablename__ = "notification_preferences"
 
