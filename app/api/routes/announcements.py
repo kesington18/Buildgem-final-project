@@ -37,11 +37,11 @@ def get_announcements(
 
     announcement_query = announcement_query.join(
         announcement_keywords,
-        Announcement.id == announcement_keywords.c.announcement.id
+        Announcement.id == announcement_keywords.c.announcement_id
     )
     announcement_query = announcement_query.join(
         Keyword,
-        announcement_keywords.c.keyword.id == Keyword.id
+        announcement_keywords.c.keyword_id == Keyword.id
     )
 
     if category is not None:
