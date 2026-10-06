@@ -15,12 +15,27 @@ class GroupUpdate(BaseModel):
 
 
 class GroupOut(BaseModel):
+    """Admin view of a group, including who added/approved it."""
     id: UUID
     chat_id: int
     name: str
     is_active: bool
-    added_by: Optional[UUID]
+    owner_id: Optional[UUID] = None
+    added_by: Optional[UUID] = None
+    telegram_added_by_id: Optional[int] = None
+    telegram_added_by_name: Optional[str] = None
+    approved_by: Optional[UUID] = None
+    approved_at: Optional[datetime] = None
     created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class GroupPublic(BaseModel):
+    """Student view: no Telegram IDs or admin audit data."""
+    id: int
+    name: str
 
     class Config:
         from_attributes = True
