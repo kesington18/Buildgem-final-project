@@ -1,8 +1,15 @@
-from sqlalchemy.orm import Session
-from app.models.keyword import Keyword
+from typing import Optional
+from uuid import UUID
 
-def get_active_keywords(db: Session):
-    return db.query(Keyword).filter_by(is_active=True).all()
+from sqlalchemy.orm import Session
+
+from app.models.keyword import Keyword, KEYWORD_APPROVED
+
+
+def get_active_keywords(db: Session, group_id: Optional[UUID] = None):
+    """Keywords the bot should listen for in this group: enabled AND approved by its owner."""
+    return db.query(Keyword).filter_by(is_active=True, status=KEYWORD_APPROVED, group_id=group_id).all()
+
 
 def get_matched_keywords(text: str, keywords: list) -> list:
     text_lower = text.lower()
