@@ -14,6 +14,19 @@ class TelegramGroup(Base):
     chat_id = Column(BigInteger, unique=True, nullable=False)
     name = Column(String, nullable=False)
     is_active = Column(Boolean, default=False, server_default=false(), nullable=False)
+
+    # The student (class governor) who owns this group and controls its keywords,
+    # set when they prove control with /claim.
+    owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True, index=True)
+
+    # Dashboard admin who created the row manually (POST /admin/groups), if any.
     added_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    telegram_added_by_id = Column(BigInteger, nullable=True)
+    telegram_added_by_name = Column(String, nullable=True)
+
+    # Dashboard admin who approved (activated) the group, and when.
+    approved_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    approved_at = Column(DateTime(timezone=True), nullable=True)
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
