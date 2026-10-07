@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 from jose import jwt, JWTError
@@ -21,6 +22,7 @@ def verify_password(plain: str, hashed: str) -> bool:
 def create_token(data: dict, expires_delta: timedelta) -> str:
     to_encode = data.copy()
     to_encode["exp"] = datetime.now(timezone.utc) + expires_delta
+    to_encode["jti"] = uuid.uuid4().hex  # unique token id, used for logout/revocation
     return jwt.encode(to_encode, settings.jwt_secret_key, algorithm=ALGORITHM)
 
 
