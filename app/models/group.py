@@ -21,6 +21,9 @@ class TelegramGroup(Base):
 
     # Dashboard admin who created the row manually (POST /admin/groups), if any.
     added_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+
+    # Telegram user who added the bot to the group. Comes from the `from` field of
+    # the my_chat_member update. This is a *Telegram* identity, not a dashboard user.
     telegram_added_by_id = Column(BigInteger, nullable=True)
     telegram_added_by_name = Column(String, nullable=True)
 
@@ -29,4 +32,3 @@ class TelegramGroup(Base):
     approved_at = Column(DateTime(timezone=True), nullable=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    

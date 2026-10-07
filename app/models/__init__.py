@@ -6,3 +6,4 @@ from app.models.notification_preferences import NotificationPreferences
 from app.models.notifications import Notification
 from app.models.push_notification import PushSubscription
 from app.models.group_claim import GroupClaimCode
+from app.models.revoked_token import RevokedToken

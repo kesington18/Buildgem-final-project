@@ -2,6 +2,7 @@ from app.db.session import Base
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
+from sqlalchemy.orm import relationship
 from sqlalchemy import Column, UniqueConstraint, ForeignKey, Boolean, DateTime, true
 from datetime import datetime
 
@@ -14,6 +15,8 @@ class Notification(Base):
     announcement_id = Column(UUID(as_uuid=True), ForeignKey("announcements.id"))
     is_read = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.now)
+
+    announcement = relationship("Announcement")
 
     __table_args__ = (
         UniqueConstraint("user_id", "announcement_id", name="unique_user_announcement"),
