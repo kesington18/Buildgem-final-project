@@ -1,12 +1,23 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from uuid import UUID
 from datetime import datetime
 from typing import Optional
 
+from app.models.announcement import AnnouncementStatus
+
+
+class KeywordBrief(BaseModel):
+    id: UUID
+    term: str
+    category: str
+
+    class Config:
+        from_attributes = True
+
 
 class AnnouncementUpdate(BaseModel):
-    status: Optional[str] = None
-    message_content: Optional[str] = None
+    status: Optional[AnnouncementStatus] = None  # invalid values now return 422, not a DB 500
+    message_content: Optional[str] = Field(default=None, min_length=1)
 
 
 class AnnouncementOut(BaseModel):
@@ -17,6 +28,7 @@ class AnnouncementOut(BaseModel):
     message_timestamp: datetime
     status: str
     created_at: datetime
+    keywords: list[KeywordBrief] = []
 
     class Config:
         from_attributes = True

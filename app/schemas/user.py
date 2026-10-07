@@ -1,13 +1,14 @@
+from typing import Optional
+
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from uuid import UUID
 from datetime import datetime
 
 
 class UserCreate(BaseModel):
-    name: str = Field(min_length=1, max_length=50)
+    name: str = Field(min_length=1, max_length=100)
     email: EmailStr
-    # bcrypt ignores >72 bytes
-    password: str = Field(min_length=8, max_length=72)
+    password: str = Field(min_length=8, max_length=72)  # bcrypt ignores >72 bytes
 
     @field_validator("email")
     @classmethod
@@ -23,6 +24,10 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+    @field_validator("email")
+    @classmethod
+    def normalize_email(cls, v):
+        return v.lower()
 
 class UserOut(BaseModel):
     id: UUID
@@ -35,14 +40,15 @@ class UserOut(BaseModel):
         from_attributes = True
 
 class MeOut(UserOut):
-    # true once the student has claimed at least one group
-    is_group_owner: bool = False
+    is_group_owner: bool = False  # true once the student has claimed at least one group
 
 class Token(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
 
-
 class RefreshRequest(BaseModel):
     refresh_token: str
+
+class LogoutRequest(BaseModel):
+    refresh_token: Optional[str] = None

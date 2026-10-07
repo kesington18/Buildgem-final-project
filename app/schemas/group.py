@@ -34,7 +34,7 @@ class GroupOut(BaseModel):
 
 class GroupPublic(BaseModel):
     """Student view: no Telegram IDs or admin audit data."""
-    id: int
+    id: UUID
     name: str
 
     class Config:

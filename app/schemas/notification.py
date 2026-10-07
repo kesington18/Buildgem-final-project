@@ -1,6 +1,9 @@
 from pydantic import BaseModel, Field, ConfigDict
 import uuid
 from datetime import datetime
+from typing import Optional
+
+from app.schemas.announcement import AnnouncementOut
 
 
 class NotificationOut(BaseModel):
@@ -11,6 +14,7 @@ class NotificationOut(BaseModel):
     announcement_id: uuid.UUID
     is_read: bool
     created_at: datetime
+    announcement: Optional[AnnouncementOut] = None  # so the feed can show the text without N extra calls
 
 
 class ReadNotification(BaseModel):
