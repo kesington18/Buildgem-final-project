@@ -11,7 +11,11 @@ def test_admin_analytics_route_is_registered(client, register_and_login):
 	response = client.get("/api/v1/admin/analytics", headers=headers)
 
 	assert response.status_code == 200
-	assert response.json() == {"per_category": {}, "per_group": {}}
+	body = response.json()
+	assert body["per_category"] == {}
+	assert body["per_group"] == {}
+	assert body["over_time"] == {}
+	assert body["totals"]["announcements"] == 0
 
 
 def test_admin_analytics_counts_categories_and_groups(
@@ -43,10 +47,12 @@ def test_admin_analytics_counts_categories_and_groups(
 	response = client.get("/api/v1/admin/analytics", headers=headers)
 
 	assert response.status_code == 200
-	assert response.json() == {
-		"per_category": {"academic": 1},
-		"per_group": {"Analytics Group": 1},
-	}
+	body = response.json()
+	assert body["per_category"] == {"academic": 1}
+	assert body["per_group"] == {"Analytics Group": 1}
+	assert sum(body["over_time"].values()) == 1
+	assert body["totals"]["active_announcements"] == 1
+	assert body["totals"]["groups"] == 1
 
 
 def test_student_cannot_access_admin_analytics(client, register_and_login):

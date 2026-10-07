@@ -4,10 +4,19 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-os.environ.setdefault(
-    "DATABASE_URL",
+# SAFETY: the tests create and DROP every table, so they must never touch the real database.
+# docker compose injects the real DATABASE_URL from .env, so we never inherit it here:
+# the test database comes only from TEST_DATABASE_URL (or the default docker test-db).
+TEST_DATABASE_URL = os.environ.get(
+    "TEST_DATABASE_URL",
     "postgresql://test_user:test_password@test-db:5432/test_db",
 )
+if "test" not in TEST_DATABASE_URL.rsplit("/", 1)[-1]:
+    raise RuntimeError(
+        "Refusing to run tests: the database name must contain 'test' "
+        "because the test suite drops all tables."
+    )
+os.environ["DATABASE_URL"] = TEST_DATABASE_URL
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key-not-for-production")
 os.environ.setdefault("TELEGRAM_SECRET_TOKEN", "test-telegram-secret")
 os.environ.setdefault("TELEGRAM_BOT_TOKEN", "test-bot-token")
@@ -16,7 +25,6 @@ os.environ.setdefault("REDIS_URL", "redis://localhost:6379")
 from app.main import app
 from app.db.session import Base, get_db
 
-TEST_DATABASE_URL = os.environ["DATABASE_URL"]
 engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
