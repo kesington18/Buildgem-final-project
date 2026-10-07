@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Literal, Optional
 from uuid import UUID
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, ConfigDict
 
 
 def _clean(value: Optional[str]) -> Optional[str]:
@@ -39,5 +39,4 @@ class KeywordOut(BaseModel):
     created_by: Optional[UUID] = None
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

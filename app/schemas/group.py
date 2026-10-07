@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from uuid import UUID
 from datetime import datetime
 from typing import Optional
@@ -27,8 +27,7 @@ class GroupOut(BaseModel):
     approved_at: Optional[datetime] = None
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class GroupPublic(BaseModel):
@@ -36,5 +35,4 @@ class GroupPublic(BaseModel):
     id: UUID
     name: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

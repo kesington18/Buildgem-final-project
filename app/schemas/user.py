@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, ConfigDict
 from uuid import UUID
 from datetime import datetime
 
@@ -36,8 +36,7 @@ class UserOut(BaseModel):
     role: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class MeOut(UserOut):
     is_group_owner: bool = False  # true once the student has claimed at least one group

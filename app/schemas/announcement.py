@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from uuid import UUID
 from datetime import datetime
 from typing import Optional
@@ -11,8 +11,7 @@ class KeywordBrief(BaseModel):
     term: str
     category: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class AnnouncementUpdate(BaseModel):
@@ -30,5 +29,4 @@ class AnnouncementOut(BaseModel):
     created_at: datetime
     keywords: list[KeywordBrief] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
