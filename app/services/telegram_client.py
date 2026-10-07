@@ -2,7 +2,6 @@ import requests
 from app.config import settings
 
 TELEGRAM_API_BASE = f"https://api.telegram.org/bot{settings.telegram_bot_token}"
-
 # Only the update types we actually handle.
 ALLOWED_UPDATES = ["message", "my_chat_member"]
 
@@ -38,10 +37,7 @@ def get_chat_member(chat_id: int, user_id: int):
     """Used to verify that someone claiming a group is really one of its admins."""
     response = requests.get(
         f"{TELEGRAM_API_BASE}/getChatMember",
-        params={
-            "chat_id": chat_id,
-            "user_id": user_id
-        },
+        params={"chat_id": chat_id, "user_id": user_id},
         timeout=15,
     )
     return response.json()

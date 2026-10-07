@@ -11,6 +11,8 @@ from app.config import settings
 # push notification
 @celery_app.task(bind=True, max_retries=3, default_retry_delay=30)
 def send_push(self, user_id: str, title: str, body: str):
+        if not settings.vapid_private_key:  # push not configured; in-app feed still works
+            return
         db: Session = sessionLocal()
         try:
             subs = db.query(PushSubscription).filter_by(user_id=user_id).all()
@@ -29,7 +31,7 @@ def send_push(self, user_id: str, title: str, body: str):
                             "body": body
                         }),
                         vapid_private_key=settings.vapid_private_key,
-                        vapid_claims={"sub": "mailto:you@example.com"},
+                        vapid_claims={"sub": f"mailto:{settings.vapid_contact_email}"},
                     )
                 except WebPushException:
                     db.delete(sub)

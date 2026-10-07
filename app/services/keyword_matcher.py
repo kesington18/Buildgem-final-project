@@ -1,10 +1,8 @@
 from typing import Optional
 from uuid import UUID
-
 from sqlalchemy.orm import Session
 
 from app.models.keyword import Keyword, KEYWORD_APPROVED
-
 
 def get_active_keywords(db: Session, group_id: Optional[UUID] = None):
     """Keywords the bot should listen for in this group: enabled AND approved by its owner."""
