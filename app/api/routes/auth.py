@@ -84,3 +84,4 @@ def me(current_user: User = Depends(get_current_user), db: Session = Depends(get
     out = MeOut.model_validate(current_user)
     out.is_group_owner = owns_group
     return out
+
