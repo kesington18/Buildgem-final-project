@@ -38,7 +38,7 @@ def create_group(payload: GroupCreate, db: Session = Depends(get_db), admin=Depe
     """Site admin only: manually register a group by chat ID (created inactive)."""
     if db.query(TelegramGroup).filter(TelegramGroup.chat_id == payload.chat_id).first():
         raise HTTPException(status_code=409, detail="A group with this chat ID already exists")
-    group = TelegramGroup(chat_id=payload.chat_id, name=payload.name, added_by=admin.id, is_active=False)
+    group = TelegramGroup(chat_id=payload.chat_id, name=payload.name, is_active=False)
     db.add(group)
     db.commit()
     db.refresh(group)

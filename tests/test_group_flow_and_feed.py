@@ -130,8 +130,8 @@ def test_malformed_token_subject_returns_401_not_500(client):
 
 def test_register_never_creates_admin_and_me_reports_role(client, register_and_login):
 	client.post("/api/v1/auth/register", json={
-		"name": "Sneaky", "email": "sneaky@example.com", "password": "password123", "role": "admin",
+		"name": "Sneaky", "email": "sneaky@example.com", "password": "testpass123", "role": "admin",
 	})
 	headers = register_and_login("sneaky@example.com")
 	assert client.get("/api/v1/auth/me", headers=headers).json()["role"] == "student"
-	assert client.get("/api/v1/admin/keywords", headers=headers).status_code == 403
+	assert client.get("/api/v1/admin/groups", headers=headers).status_code == 403

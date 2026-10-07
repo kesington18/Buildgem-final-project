@@ -23,5 +23,7 @@ def test_get_matched_keywords_no_match_returns_empty_list():
 
 def test_get_active_keywords_queries_with_is_active_true():
     mock_db = MagicMock()
-    get_active_keywords(mock_db)
-    mock_db.query.return_value.filter_by.assert_called_once_with(is_active=True)
+    get_active_keywords(mock_db, "group-1")
+    mock_db.query.return_value.filter_by.assert_called_once_with(
+        is_active=True, status="approved", group_id="group-1"
+    )

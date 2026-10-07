@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 from app.models.group import TelegramGroup
 from app.models.group_claim import GroupClaimCode
 from app.services.telegram_client import get_chat_member, send_message
+from app.services.telegram_utils import telegram_display_name
 
 logger = logging.getLogger(__name__)
 
@@ -68,8 +69,14 @@ def handle_claim_command(message: dict, db) -> None:
     group.is_active = True
     group.approved_by = claim.user_id
     group.approved_at = now
+    # Normally the adder is recorded when the bot joins. For groups the bot joined before that
+    # was tracked, fall back to the person claiming, and fill in a missing name for the same person.
+    sender_name = telegram_display_name(sender)
     if group.telegram_added_by_id is None:
         group.telegram_added_by_id = sender.get("id")
+        group.telegram_added_by_name = sender_name
+    elif group.telegram_added_by_id == sender.get("id") and not group.telegram_added_by_name:
+        group.telegram_added_by_name = sender_name
     claim.used_at = now
     db.commit()
     _reply(chat_id, "Group linked. Its owner can now manage keywords and announcements on the website.")

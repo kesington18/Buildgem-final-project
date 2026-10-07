@@ -3,6 +3,7 @@ from app.db.session import sessionLocal
 from app.models.group import TelegramGroup
 from app.services.announcement_writer import save_announcement
 from app.services.group_claim import handle_claim_command
+from app.services.telegram_utils import telegram_display_name
 from app.services.keyword_matcher import get_active_keywords, get_matched_keywords
 
 GROUP_CHAT_TYPES = ("group", "supergroup")
@@ -21,13 +22,6 @@ def process_update(payload: dict):
     finally:
         db.close()
 
-def _telegram_display_name(user: dict) -> str | None:
-    if not user:
-        return None
-    if user.get("username"):
-        return f"@{user['username']}"
-    full = " ".join(p for p in (user.get("first_name"), user.get("last_name")) if p)
-    return full or None
 
 def handle_chat_member_update(chat_member_update: dict, db):
     """The bot's own membership changed (added to / removed from a chat)."""
@@ -50,7 +44,7 @@ def handle_chat_member_update(chat_member_update: dict, db):
             name=chat.get("title", "Unknown Group"),
             is_active=False,  # stays pending until a dashboard admin approves it
             telegram_added_by_id=actor.get("id"),
-            telegram_added_by_name=_telegram_display_name(actor),
+            telegram_added_by_name=telegram_display_name(actor),
         ))
         db.commit()
 

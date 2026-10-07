@@ -188,3 +188,37 @@ def test_bot_only_listens_for_the_groups_own_keywords(client, db_session, regist
 
 	saved = db_session.query(Announcement).one()
 	assert saved.source_group_id == ga.id and [k.term for k in saved.keywords] == ["exam"]
+
+
+def test_claim_records_claimers_telegram_identity_when_adder_unknown(client, db_session, register_and_login):
+	headers = register_and_login("gov-name@example.com")
+	_group(db_session, -4020)
+
+	_claim(db_session, _claim_msg(-4020, _code(client, headers)["code"], user_id=99))
+
+	db_session.expire_all()
+	group = db_session.query(TelegramGroup).filter_by(chat_id=-4020).one()
+	assert group.telegram_added_by_id == 99 and group.telegram_added_by_name == "Gov"
+
+
+def test_reclaiming_fills_missing_name_for_legacy_group(client, db_session, register_and_login):
+	headers = register_and_login("gov-legacy@example.com")
+	owner_id = _me(client, headers)["id"]
+	g = _group(db_session, -4021, owner_id=owner_id, active=True)
+	g.telegram_added_by_id = 99  # id known, name missing (the legacy state)
+	db_session.commit()
+
+	_claim(db_session, _claim_msg(-4021, _code(client, headers)["code"], user_id=99))
+
+	db_session.expire_all()
+	group = db_session.query(TelegramGroup).filter_by(chat_id=-4021).one()
+	assert group.telegram_added_by_name == "Gov" and str(group.owner_id) == owner_id
+
+
+def test_group_response_has_no_added_by_field(client, db_session, register_and_login):
+	admin = register_and_login("shape-admin@example.com", make_admin=True)
+	_group(db_session, -4022)
+
+	body = client.get("/api/v1/admin/groups", headers=admin).json()[0]
+
+	assert "added_by" not in body and "telegram_added_by_name" in body

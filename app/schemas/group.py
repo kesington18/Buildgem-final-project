@@ -21,7 +21,6 @@ class GroupOut(BaseModel):
     name: str
     is_active: bool
     owner_id: Optional[UUID] = None
-    added_by: Optional[UUID] = None
     telegram_added_by_id: Optional[int] = None
     telegram_added_by_name: Optional[str] = None
     approved_by: Optional[UUID] = None
