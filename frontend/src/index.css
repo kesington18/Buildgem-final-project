@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+/* Design tokens. Every colour/font in the app comes from here (bg-paper, text-ink, font-display ...). */
+@theme {
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  --color-paper: #f3efe6;   /* page background: warm bone */
+  --color-paper-2: #ebe5d7; /* hover / subtle fills */
+  --color-card: #fbf9f3;    /* raised surfaces */
+  --color-line: #d9d1bf;    /* borders */
+  --color-ink: #14201b;     /* text: green-black, not pure black */
+  --color-ink-2: #3b4a43;
+  --color-ink-3: #6f7b74;
+  --color-moss: #2f4a3c;    /* primary */
+  --color-moss-2: #3d6150;
+  --color-clay: #b4532c;    /* accent: terracotta */
+  --color-clay-2: #cf6a3f;
+  --color-ochre: #c99a3b;   /* highlight */
+  --color-sage: #dfe6da;
+
+  --animate-marquee: marquee 40s linear infinite;
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* A whisper of paper grain over everything, so flat colour doesn't feel digital. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .2 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::selection { background: var(--color-ochre); color: var(--color-ink); }
+
+:focus-visible { outline: 2px solid var(--color-moss); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
