@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { Check, Rss } from "lucide-react";
 import { api, errorMessage } from "../lib/api";
 import { useToast } from "../components/Toast";
+import { PushCard } from "../components/PushCard";
 import { fadeUp, stagger } from "../components/Reveal";
 import { Button, Card, EmptyState, PageHeader, Skeleton, cx } from "../components/ui";
 
@@ -50,6 +51,8 @@ export default function Following() {
           </Button>
         }
       />
+
+      <PushCard hideWhenOn />
 
       {groupsQ.isLoading || prefsQ.isLoading ? (
         <div className="grid gap-4 sm:grid-cols-2">{[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-24" />)}</div>

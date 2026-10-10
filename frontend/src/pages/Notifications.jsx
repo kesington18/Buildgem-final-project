@@ -5,6 +5,7 @@ import { Bell, Check } from "lucide-react";
 import { api, errorMessage } from "../lib/api";
 import { timeAgo } from "../lib/format";
 import { useToast } from "../components/Toast";
+import { PushCard } from "../components/PushCard";
 import { Button, Card, EmptyState, KeywordChip, PageHeader, Skeleton, cx } from "../components/ui";
 
 export default function Notifications() {
@@ -44,6 +45,8 @@ export default function Notifications() {
           </Button>
         }
       />
+
+      <PushCard />
 
       <div className="mb-6 inline-flex rounded-full border border-line bg-card p-1">
         {["all", "unread"].map((t) => (
