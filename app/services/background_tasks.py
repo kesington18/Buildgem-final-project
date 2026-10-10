@@ -1,3 +1,4 @@
+from sqlalchemy.exc import IntegrityError
 from app.core.celery_app import celery_app
 from app.db.session import sessionLocal
 from app.models.group import TelegramGroup
@@ -61,8 +62,22 @@ def handle_message(message: dict, db):
     if new_chat_id:
         group = db.query(TelegramGroup).filter_by(chat_id=chat_id).first()
         if group:
-            group.chat_id = new_chat_id
-            db.commit()
+            # The bot may already have created a pending row for the new supergroup id
+            # (it fires a membership event for it). Drop that stray row so the original,
+            # approved group can take over the new id without a duplicate-key error.
+            stray = (
+                db.query(TelegramGroup)
+                .filter(TelegramGroup.chat_id == new_chat_id, TelegramGroup.id != group.id)
+                .first()
+            )
+            try:
+                if stray:
+                    db.delete(stray)
+                    db.flush()
+                group.chat_id = new_chat_id
+                db.commit()
+            except IntegrityError:
+                db.rollback()  # the stray row is referenced elsewhere; leave both rows as they are
         return
 
     text = message.get("text")
