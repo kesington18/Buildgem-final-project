@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     vapid_contact_email: str = "admin@example.com"
 
     # Comma-separated list of frontend origins allowed to call the API.
-    cors_origins: str = "http://localhost:5173,http://localhost:3000"
+    cors_origins: str = "http://localhost:5173,http://localhost:3000,https://noticeboard-alpha.vercel.app"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
