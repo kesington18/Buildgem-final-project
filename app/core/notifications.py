@@ -1,4 +1,5 @@
 from app.models.announcement import Announcement
+from app.models.group import TelegramGroup
 from app.models.notification_preferences import NotificationPreferences
 from app.models.notifications import Notification
 from sqlalchemy.orm import Session
@@ -16,6 +17,8 @@ def notify_students_for_announcement(announcement: Announcement, db: Session):
     )
 
     matched_user_ids = {pref.user_id for pref in group_matches}
+    group = db.query(TelegramGroup).filter(TelegramGroup.id == announcement.source_group_id).first()
+    group_name = group.name if group else "your group"
 
     for user_id in matched_user_ids:
         already_exists = db.query(Notification).filter(Notification.user_id == user_id, Notification.announcement_id == announcement.id).first()
@@ -30,7 +33,13 @@ def notify_students_for_announcement(announcement: Announcement, db: Session):
             created_at= datetime.utcnow()
         )
         db.add(new_notification)
-        send_push.delay(str(user_id), "New Announcement", announcement.message_content[:100])
+        send_push.delay(
+            str(user_id),
+            f"New in {group_name}",
+            announcement.message_content[:100],
+            "/app/notifications",
+            str(announcement.id),
+        )
 
     db.commit()
     return matched_user_ids
