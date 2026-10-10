@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import get_current_user
-from app.config import settings
+from app.core.vapid import get_public_key
 from app.db.session import get_db
 from app.models.group import TelegramGroup
 from app.models.notification_preferences import NotificationPreferences
@@ -112,7 +112,7 @@ def update_preferences(
 @router.get("/vapid-public-key")
 def vapid_public_key():
     """The browser needs this public key to create a web-push subscription."""
-    return {"public_key": settings.vapid_public_key}
+    return {"public_key": get_public_key()}
 
 
 @router.post("/push-subscription")
