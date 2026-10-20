@@ -27,3 +27,11 @@ celery_app.conf.update(
     worker_prefetch_multiplier=1, # don't let one slow task block others queued behind it
     task_default_retry_delay=30,  # if Pxxl is briefly unreachable, wait 30s before retrying
 )
+
+# TLS options are only valid for rediss:// URLs (e.g. Upstash).
+# Plain redis:// (e.g. Pxxl's Redis) must NOT have them.
+if settings.redis_url.startswith("rediss://"):
+    celery_app.conf.update(
+        broker_use_ssl={"ssl_cert_reqs": "none"},
+        redis_backend_use_ssl={"ssl_cert_reqs": "none"},
+    )
