@@ -35,3 +35,11 @@ if settings.redis_url.startswith("rediss://"):
         broker_use_ssl={"ssl_cert_reqs": "none"},
         redis_backend_use_ssl={"ssl_cert_reqs": "none"},
     )
+
+import logging
+logging.getLogger("uvicorn.error").warning(
+    "CELERY CONFIG: scheme=%s backend_ssl=%s broker_ssl=%s",
+    settings.redis_url.split("://")[0],
+    celery_app.conf.get("redis_backend_use_ssl"),
+    celery_app.conf.get("broker_use_ssl"),
+)
