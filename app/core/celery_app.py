@@ -1,3 +1,5 @@
+import logging
+
 from celery import Celery
 from app.config import settings
 
@@ -8,11 +10,7 @@ celery_app = Celery(
 )
 
 celery_app.conf.update(
-    # Upstash requires TLS (rediss://) — this tells Celery's Redis
-    # transport not to verify a cert chain, which Upstash's setup doesn't need
-    broker_use_ssl={"ssl_cert_reqs": "none"},
-    redis_backend_use_ssl={"ssl_cert_reqs": "none"},
-    include=["app.services.background_tasks", "app.core.notifications","app.services.push_notifier"],
+    include=["app.services.background_tasks", "app.core.notifications", "app.services.push_notifier"],
 
     broker_connection_retry_on_startup=True,
 
@@ -36,7 +34,6 @@ if settings.redis_url.startswith("rediss://"):
         redis_backend_use_ssl={"ssl_cert_reqs": "none"},
     )
 
-import logging
 logging.getLogger("uvicorn.error").warning(
     "CELERY CONFIG: scheme=%s backend_ssl=%s broker_ssl=%s",
     settings.redis_url.split("://")[0],
